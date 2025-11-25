@@ -2,10 +2,6 @@ header, footer {
     background-color: var(--bg-color-grey);
 }
 
-/* Header */
-
-/* Main */
-
 main > .float-start {
     box-shadow: 0.6rem 0.6rem 0.6rem var(--bg-color-grey);
 }
@@ -25,15 +21,56 @@ main > .float-start {
     border-bottom-right-radius: 1rem;
 }
 
-/* Footer */
-
 footer {
     height: 5rem;
 }
 
-/* Customizing */
-
 .btn-danger {
     background-color: rgba(204, 3, 35, 0.5);
     color: var(--color-main);
+}
+
+.contact-container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contact-container label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.contact-container input[type=text],
+.contact-container input[type=email],
+.contact-container select,
+.contact-container textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.contact-container textarea {
+    height: 200px;
+}
+
+.contact-btn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.contact-btn:hover {
+    background-color: #45a049;
 }
