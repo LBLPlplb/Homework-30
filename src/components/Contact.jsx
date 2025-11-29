@@ -1,108 +1,58 @@
+import '../Contact.css'
+import {useEffect, useState} from "react";
+import {base_url, period_month} from "../utils/constants.js";
 
-import { useEffect, useState } from "react";
-import { base_url } from "../utils/constants.js";
 
 const Contact = () => {
-    const [planets, setPlanets] = useState([]);
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        planet: "",
-        subject: ""
-    });
+    const [planets, setPlanets] = useState(['wait...']);
 
-    useEffect(() => {
-        const saved = localStorage.getItem("planets_data");
 
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            const isExpired = Date.now() - parsed.timestamp > 30 * 24 * 60 * 60 * 1000;
-            if (!isExpired) {
-                setPlanets(parsed.value);
-                return;
-            }
-        }
-
-        fetch(`${base_url}/v1/planets`)
-            .then(res => res.json())
-            .then(data => {
-                const planetNames = data.map(p => p.name);
-                setPlanets(planetNames);
-                localStorage.setItem(
-                    "planets_data",
-                    JSON.stringify({ value: planetNames, timestamp: Date.now() })
-                );
-            });
-    }, []);
-
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Form submitted:", form);
-        alert("Form submitted! Check console.");
-    };
-
-    if (planets.length === 0) {
-        return (
-            <p className="far-galaxy">
-                <span className="spinner-border-sm spinner-border"></span>
-                <span className="spinner-grow spinner-grow-sm">Loading...</span>
-            </p>
-        );
+    async function getPlanets() {
+        const res = await fetch(`${base_url}/v1/planets`);
+        const data = await res.json();
+        const planets = data.map(item => item.name);
+        setPlanets(planets);
+        localStorage.setItem('planets', JSON.stringify({
+            payload: planets,
+            time: Date.now()
+        }));
     }
 
+
+    useEffect(() => {
+        const planets = JSON.parse(localStorage.getItem('planets'));
+        if (planets && ((Date.now() - planets.time) < period_month)) {
+            setPlanets(planets.payload);
+        } else {
+            getPlanets().then(() => console.log('Planets were loaded'));
+        }
+    }, [])
+
+
     return (
-        <div className="container mt-5">
-            <form onSubmit={handleSubmit} className="contact-container">
-                <label htmlFor="name">Name:</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
-                />
-
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                />
-
-                <label htmlFor="planet">Select Planet:</label>
-                <select
-                    id="planet"
-                    name="planet"
-                    value={form.planet}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Select planet</option>
-                    {planets.map((p, i) => (
-                        <option key={i} value={p}>{p}</option>
-                    ))}
+        <form className="container" onSubmit={e => {
+            e.preventDefault();
+        }}>
+            <label>First Name
+                <input type="text" name="firstname" placeholder="Your name.."/>
+            </label>
+            <label>Last Name
+                <input type="text" name="lastname" placeholder="Your last name.."/>
+            </label>
+            <label>Planet
+                <select name="planet">
+                    {planets.map(item => <option value={item} key={item}>{item}</option>)}
                 </select>
+            </label>
 
-                <label htmlFor="subject">Subject:</label>
-                <textarea
-                    id="subject"
-                    name="subject"
-                    value={form.subject}
-                    onChange={handleChange}
-                    style={{ height: "200px" }}
-                    required
-                />
-            </form>
-        </div>
-    );
-};
+
+            <label>Subject
+                <textarea name="subject" placeholder="Write something.."></textarea>
+            </label>
+            <button type="submit">Submit</button>
+        </form>
+    )
+}
+
 
 export default Contact;

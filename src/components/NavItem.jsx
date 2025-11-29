@@ -1,16 +1,12 @@
-import { useContext } from "react";
-import { PageContext } from "../utils/context.js";
 
-const NavItem = ({ itemTitle }) => {
-    const { setPage } = useContext(PageContext);
+import {useContext} from "react";
+import {SWContext} from "../utils/context.js";
+import Button from "./ui/Button.jsx";
 
+const NavItem = ({itemTitle}) => {
+    const {changePage} = useContext(SWContext);
     return (
-        <li
-            onClick={() => setPage(itemTitle)}
-            className="nav-item btn btn-danger mx-1 border-warning"
-        >
-            {itemTitle}
-        </li>
+        <Button callback={() => changePage(itemTitle)}>{itemTitle}</Button>
     )
 }
 
